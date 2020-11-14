@@ -46,20 +46,20 @@ var (
 func init() {
 	cobra.EnableCommandSorting = false
 
-	rootCmd.SilenceUsage = true
+	RootCmd.SilenceUsage = true
 
 	// Register top level flags --home and --debug
-	rootCmd.PersistentFlags().StringVar(&homePath, flags.FlagHome, defaultHome, "set home directory")
-	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "debug output")
-	if err := viper.BindPFlag(flags.FlagHome, rootCmd.Flags().Lookup(flags.FlagHome)); err != nil {
+	RootCmd.PersistentFlags().StringVar(&homePath, flags.FlagHome, defaultHome, "set home directory")
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "debug output")
+	if err := viper.BindPFlag(flags.FlagHome, RootCmd.Flags().Lookup(flags.FlagHome)); err != nil {
 		panic(err)
 	}
-	if err := viper.BindPFlag("debug", rootCmd.Flags().Lookup("debug")); err != nil {
+	if err := viper.BindPFlag("debug", RootCmd.Flags().Lookup("debug")); err != nil {
 		panic(err)
 	}
 
 	// Register subcommands
-	rootCmd.AddCommand(
+	RootCmd.AddCommand(
 		configCmd(),
 		chainsCmd(),
 		pathsCmd(),
@@ -81,8 +81,8 @@ func init() {
 	// appCodec = codecstd.NewAppCodec(cdc)
 }
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+// RootCmd represents the base command when called without any subcommands
+var RootCmd = &cobra.Command{
 	Use:   "rly",
 	Short: "This application relays data between configured IBC enabled chains",
 	Long: strings.TrimSpace(`The relayer has commands for:
@@ -96,14 +96,14 @@ NOTE: Most of the commands have aliases that make typing them much quicker (i.e.
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// This is called by main.main(). It only needs to happen once to the RootCmd.
 func Execute() {
-	rootCmd.PersistentPreRunE = func(_ *cobra.Command, _ []string) error {
+	RootCmd.PersistentPreRunE = func(_ *cobra.Command, _ []string) error {
 		// reads `homeDir/config/config.yaml` into `var config *Config` before each command
-		return initConfig(rootCmd)
+		return initConfig(RootCmd)
 	}
 
-	if err := rootCmd.Execute(); err != nil {
+	if err := RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
