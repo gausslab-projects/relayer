@@ -341,7 +341,11 @@ func initConfig(cmd *cobra.Command) error {
 	if err != nil {
 		return err
 	}
+	return InitConfig(home)
+}
 
+// InitConfig reads in config file and ENV variables if set.
+func InitConfig(home string) error {
 	config = &Config{}
 	cfgPath := path.Join(home, "config", "config.yaml")
 	if _, err := os.Stat(cfgPath); err == nil {
